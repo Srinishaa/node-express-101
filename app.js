@@ -49,20 +49,31 @@ user.save(function (err) {
 
 app.get("/test/:id", function(req,res){
   console.log(req.params.id)
+  var data, subject;
   User.findById({
     _id: req.params.id
     },function(err, result) {
     if (!err) {
-        const data = result;
-        res.render("test", {
-          data: data
-        });
+        data = result;
+        User.find(function(err, result) {
+          if (!err) {
+              subject = result;
+              res.render("test", {
+                data: data,
+                subject:subject
+              });
+            }
+          else{
+              console.log(err)
+          }
+        })
       }
     else{
         console.log(err)
     }
 })
 })
+
 
 app.post("/delete",function(req,res){
   User.deleteOne({_id:req.body.id},function(err){
